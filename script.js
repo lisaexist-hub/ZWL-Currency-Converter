@@ -1,4 +1,3 @@
-// 🌍 ZWL Currency Converter — FINAL TESTED VERSION
 console.log("✅ ZWL Converter Script Loaded");
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -10,13 +9,23 @@ document.addEventListener("DOMContentLoaded", () => {
   const chartCanvas = document.getElementById("chart");
   let chartInstance;
 
+  if (!form || !resultDiv || !amountInput || !fromSelect || !toSelect) {
+    alert("❌ Error: One or more required elements not found in the DOM.");
+    console.error("Missing DOM element", { form, resultDiv, amountInput, fromSelect, toSelect });
+    return;
+  }
+
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
+
+    // Extra debug: confirm handler is active
+    console.log("➡️ Convert clicked!");
+
     const amount = parseFloat(amountInput.value);
     const from = fromSelect.value;
     const to = toSelect.value;
 
-    if (!amount || amount <= 0) {
+    if (isNaN(amount) || amount <= 0) {
       resultDiv.textContent = "⚠️ Enter a valid amount.";
       resultDiv.style.color = "#e74c3c";
       return;
@@ -29,11 +38,23 @@ document.addEventListener("DOMContentLoaded", () => {
       const apiUrl = `https://v6.exchangerate-api.com/v6/baf8990da4b95a474a16a2ad/latest/${from}`;
       console.log("📡 Fetching:", apiUrl);
       const res = await fetch(apiUrl);
-      const data = await res.json();
 
-      if (data.result !== "success") throw new Error("Bad API response");
+      if (!res.ok) {
+        throw new Error(`Network error: ${res.status}`);
+      }
+
+      const data = await res.json();
+      console.log("API Response:", data);
+
+      if (data.result !== "success") {
+        throw new Error(data["error-type"] || "Bad API response");
+      }
 
       const rate = data.conversion_rates[to];
+      if (!rate) {
+        throw new Error(`No rate available for ${from} to ${to}`);
+      }
+
       const converted = (amount * rate).toFixed(2);
 
       resultDiv.innerHTML = `
@@ -49,6 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
         value: (rate * (1 + (Math.random() - 0.5) * 0.04)).toFixed(2),
       }));
 
+      // chart.js: destroy old, create new
       if (chartInstance) chartInstance.destroy();
       chartInstance = new Chart(chartCanvas, {
         type: "line",
@@ -68,8 +90,9 @@ document.addEventListener("DOMContentLoaded", () => {
         options: { responsive: true, plugins: { legend: { display: true } } },
       });
     } catch (err) {
-      console.error(err);
-      resultDiv.textContent = "❌ Could not fetch live rates. Try again later.";
+      console.error("❌ Error:", err);
+      resultDiv.textContent = "❌ Could not fetch live rates. Try again later.<br>" +
+                              (err.message ? `Error: ${err.message}` : "");
       resultDiv.style.color = "#e74c3c";
     }
   });
