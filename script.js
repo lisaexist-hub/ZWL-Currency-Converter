@@ -13,29 +13,21 @@ let chartInstance;
 // Use a reliable HTTPS API endpoint
 async function fetchRate(from, to) {
   try {
-    const apiUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://open.er-api.com/v6/latest/${from}`)}`;
+    const apiUrl = `https://v6.exchangerate-api.com/v6/2c5c1a7fffc7d5e29a17b4f1/latest/${from}`;
     const response = await fetch(apiUrl);
     const data = await response.json();
 
-    if (!data.rates || !data.rates[to]) throw new Error("Invalid response");
-    return data.rates[to];
+    if (data.result !== "success" || !data.conversion_rates[to]) {
+      throw new Error("Invalid response");
+    }
+
+    return data.conversion_rates[to];
   } catch (error) {
     console.error("API error:", error);
     return null;
   }
 }
 
-// 7-day trend mock (API doesn’t provide daily history)
-async function fetchTrendData(from, to) {
-  const baseRate = await fetchRate(from, to);
-  if (!baseRate) return [];
-
-  // Generate fake fluctuation around current rate for demo chart
-  return Array.from({ length: 7 }, (_, i) => ({
-    day: `Day ${i + 1}`,
-    rate: (baseRate * (1 + (Math.random() - 0.5) * 0.05)).toFixed(2),
-  }));
-}
 
 // Handle form submit
 form.addEventListener("submit", async (e) => {
