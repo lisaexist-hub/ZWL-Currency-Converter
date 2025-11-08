@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ZWL Currency Converter</title>
+  <meta name="description" content="Convert Zimbabwean Dollar (ZWL) with live rates and view 7‑day trends vs USD, GBP, and ZAR." />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="component-header">
+    <div class="header-inner">
+      <a class="logo-wrapper" href="#">
+        <img src="assets/logo.png" alt="ZWL Converter" class="nav-logo" />
+      </a>
+      <h1 class="app-title">💱 ZWL Currency Converter</h1>
+    </div>
+  </header>
+
+  <main class="content">
+    <section class="hero-section">
+      <div class="hero-text">
+        <h2>Convert currencies instantly</h2>
+        <p>Real-time exchange rates for ZWL, USD, ZAR, GBP, and EUR.</p>
+      </div>
+
+      <div class="converter-card">
+        <div class="row">
+          <label for="from">From:</label>
+          <select id="from">
+            <option value="USD" selected>USD - United States Dollar</option>
+            <option value="ZWL">ZWL - Zimbabwe Dollar</option>
+            <option value="ZAR">ZAR - South African Rand</option>
+            <option value="GBP">GBP - British Pound</option>
+            <option value="EUR">EUR - Euro</option>
+          </select>
+        </div>
+
+        <div class="row">
+          <label for="to">To:</label>
+          <select id="to">
+            <option value="USD">USD - United States Dollar</option>
+            <option value="ZWL" selected>ZWL - Zimbabwe Dollar</option>
+            <option value="ZAR">ZAR - South African Rand</option>
+            <option value="GBP">GBP - British Pound</option>
+            <option value="EUR">EUR - Euro</option>
+          </select>
+        </div>
+
+        <div class="row">
+          <label for="amount">Amount:</label>
+          <input type="number" id="amount" placeholder="Enter amount" />
+        </div>
+
+        <button id="convertBtn" class="cta-button">Convert</button>
+
+        <div id="result" class="result">Result will appear here</div>
+        <small id="updated" class="updated"></small>
+      </div>
+    </section>
+
+    <section class="chart-section">
+      <h3>📊 ZWL vs Other Currencies (7-Day Trend)</h3>
+      <div class="chart-controls">
+        <label for="chartTarget">Compare ZWL against:</label>
+        <select id="chartTarget">
+          <option value="USD" selected>USD - United States Dollar</option>
+          <option value="GBP">GBP - British Pound</option>
+          <option value="ZAR">ZAR - South African Rand</option>
+        </select>
+      </div>
+      <canvas id="rateChart" height="320"></canvas>
+      <small id="chartNote" class="updated"></small>
+    </section>
+
+    <section class="info">
+      <h3>About this tool</h3>
+      <p>This converter uses real-time data from <strong>exchangerate.host</strong>. Built by <strong>Lis’ Dube</strong> as a portfolio project.</p>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 ZWL Currency Converter — Built with ❤️ in Zimbabwe</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
