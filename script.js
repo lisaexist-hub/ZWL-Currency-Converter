@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const chartCanvas = document.getElementById("chart");
   let chartInstance;
 
-  // Helper: remove all status classes and add one if needed
+  
   function setResultStatus(status) {
     resultDiv.classList.remove('success', 'error', 'neutral');
     if (status) resultDiv.classList.add(status);
@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    setResultStatus(); // Remove previous status
+    setResultStatus(); 
     const amount = parseFloat(amountInput.value);
     const from = fromSelect.value;
     const to = toSelect.value;
@@ -74,7 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
         value: (rate * (1 + (Math.random() - 0.5) * 0.04)).toFixed(2),
       }));
 
-      // chart.js: destroy old, create new
+   
       if (chartInstance) chartInstance.destroy();
       chartInstance = new Chart(chartCanvas, {
         type: "line",
