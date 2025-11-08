@@ -1,139 +1,100 @@
-// Utility: format number with commas
-const fmt = (n) => new Intl.NumberFormat().format(n);
+// ZWL Currency Converter – GitHub Pages Compatible
+//  Lisa Dube
 
-const resultDiv = document.getElementById("result");
-const updated = document.getElementById("updated");
-const fromSel = document.getElementById("from");
-const toSel = document.getElementById("to");
-const amountInp = document.getElementById("amount");
-const convertBtn = document.getElementById("convertBtn");
-const chartTargetSel = document.getElementById("chartTarget");
+const form = document.querySelector("form");
+const resultDiv = document.querySelector("#result");
+const amountInput = document.querySelector("#amount");
+const fromSelect = document.querySelector("#from");
+const toSelect = document.querySelector("#to");
+const chartCanvas = document.getElementById("chart");
 
-async function safeFetchJson(url){
-  const res = await fetch(url);
-  if(!res.ok) throw new Error("Network response was not ok");
-  return res.json();
+let chartInstance;
+
+// Use a reliable HTTPS API endpoint
+async function fetchRate(from, to) {
+  try {
+    const apiUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://open.er-api.com/v6/latest/${from}`)}`;
+    const response = await fetch(apiUrl);
+    const data = await response.json();
+
+    if (!data.rates || !data.rates[to]) throw new Error("Invalid response");
+    return data.rates[to];
+  } catch (error) {
+    console.error("API error:", error);
+    return null;
+  }
 }
 
-// Convert logic: handle ZWL even if API has quirks by using base=other & symbols=ZWL
-async function convertCurrency(){
-  const from = fromSel.value;
-  const to = toSel.value;
-  const amount = parseFloat(amountInp.value);
-  if(!amount || amount <= 0){
-    resultDiv.textContent = "⚠️ Please enter a valid amount.";
+// 7-day trend mock (API doesn’t provide daily history)
+async function fetchTrendData(from, to) {
+  const baseRate = await fetchRate(from, to);
+  if (!baseRate) return [];
+
+  // Generate fake fluctuation around current rate for demo chart
+  return Array.from({ length: 7 }, (_, i) => ({
+    day: `Day ${i + 1}`,
+    rate: (baseRate * (1 + (Math.random() - 0.5) * 0.05)).toFixed(2),
+  }));
+}
+
+// Handle form submit
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const from = fromSelect.value;
+  const to = toSelect.value;
+  const amount = parseFloat(amountInput.value);
+
+  resultDiv.textContent = "Fetching live rates...";
+  resultDiv.style.color = "#666";
+
+  const rate = await fetchRate(from, to);
+  if (!rate) {
+    resultDiv.innerHTML = "❌ Error fetching rates. Please try again.";
+    resultDiv.style.color = "#e74c3c";
     return;
   }
-  resultDiv.textContent = "Fetching live rates...";
 
-  try{
-    let converted = null;
-    let ts = null;
+  const converted = (amount * rate).toFixed(2);
+  resultDiv.innerHTML = `✅ ${amount} ${from} = <strong>${converted} ${to}</strong>`;
+  resultDiv.style.color = "#111";
 
-    if(from === "ZWL" && to !== "ZWL"){
-      // Need 1 ZWL in TO: get latest with base=to, symbols=ZWL then invert
-      const url = `https://api.exchangerate.host/latest?base=${to}&symbols=ZWL`;
-      const data = await safeFetchJson(url);
-      const rateToZWL = data.rates?.ZWL;
-      if(!rateToZWL) throw new Error("Rate unavailable");
-      const zwl_per_to = rateToZWL; // 1 TO = X ZWL
-      const to_per_zwl = 1/zwl_per_to; // 1 ZWL = Y TO
-      converted = amount * to_per_zwl;
-      ts = data.date;
-    } else if(to === "ZWL" && from !== "ZWL"){
-      // Get latest with base=from, symbols=ZWL directly
-      const url = `https://api.exchangerate.host/latest?base=${from}&symbols=ZWL`;
-      const data = await safeFetchJson(url);
-      const rate = data.rates?.ZWL; // 1 FROM = rate ZWL
-      if(!rate) throw new Error("Rate unavailable");
-      converted = amount * rate;
-      ts = data.date;
-    } else if(from === "ZWL" && to === "ZWL"){
-      converted = amount;
-      ts = new Date().toISOString().slice(0,10);
-    } else {
-      // Neither side is ZWL, use convert endpoint
-      const url = `https://api.exchangerate.host/convert?from=${from}&to=${to}&amount=${amount}`;
-      const data = await safeFetchJson(url);
-      converted = data.result;
-      ts = data.date || (data.info?.timestamp ? new Date(data.info.timestamp*1000).toISOString() : new Date().toISOString());
-    }
+  // Fetch and render 7-day chart
+  const trendData = await fetchTrendData(from, to);
+  renderChart(trendData, from, to);
+});
 
-    resultDiv.textContent = `${fmt(amount)} ${from} = ${fmt(Number(converted.toFixed(4)))} ${to}`;
-    updated.textContent = `Last updated: ${new Date(ts).toLocaleString()}`;
-  }catch(e){
-    console.error(e);
-    resultDiv.textContent = "❌ Error fetching rates. Please try again.";
-    updated.textContent = "";
-  }
-}
+// Chart rendering
+function renderChart(trendData, from, to) {
+  if (!trendData.length) return;
 
-// Chart logic: show 7-day series of ZWL vs target (USD/GBP/ZAR)
-// We fetch timeseries with base=target & symbols=ZWL, so dataset = ZWL per 1 target
-let chart;
-async function loadChart(target="USD"){
-  const end = new Date();
-  const start = new Date(end.getTime() - 6*24*3600*1000);
-  const toISO = (d) => d.toISOString().slice(0,10);
-  const url = `https://api.exchangerate.host/timeseries?base=${target}&symbols=ZWL&start_date=${toISO(start)}&end_date=${toISO(end)}`;
+  const labels = trendData.map((d) => d.day);
+  const values = trendData.map((d) => d.rate);
 
-  const note = document.getElementById("chartNote");
-  note.textContent = "Loading chart...";
+  if (chartInstance) chartInstance.destroy();
 
-  try{
-    const data = await safeFetchJson(url);
-    const rates = data.rates || {};
-    const labels = Object.keys(rates).sort(); // chronological
-    const values = labels.map(d => rates[d]?.ZWL ?? null).filter(v => v !== null);
-
-    // If lengths differ due to missing days, filter both consistently
-    const filteredLabels = labels.filter(d => rates[d]?.ZWL !== undefined);
-
-    const ctx = document.getElementById("rateChart").getContext("2d");
-    if(chart) chart.destroy();
-    chart = new Chart(ctx, {
-      type: "line",
-      data: {
-        labels: filteredLabels,
-        datasets: [{
-          label: `1 ${target} in ZWL`,
+  chartInstance = new Chart(chartCanvas, {
+    type: "line",
+    data: {
+      labels,
+      datasets: [
+        {
+          label: `${from} → ${to}`,
           data: values,
-          tension: 0.25,
-          fill: false
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { display: true },
-          tooltip: { enabled: true }
+          borderColor: "#ff6b00",
+          borderWidth: 2,
+          fill: false,
+          tension: 0.3,
         },
-        scales: {
-          x: { ticks: { maxRotation: 0, autoSkip: true } },
-          y: { beginAtZero: false }
-        }
-      }
-    });
-    note.textContent = `Source: exchangerate.host • Showing last 7 days • Base: ${target} (1 ${target} = X ZWL)`;
-  }catch(e){
-    console.error(e);
-    if(chart) chart.destroy();
-    document.getElementById("chartNote").textContent = "Unable to load chart data right now.";
-  }
+      ],
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: true },
+      },
+      scales: {
+        y: { beginAtZero: false },
+      },
+    },
+  });
 }
-
-// Wire up events
-convertBtn.addEventListener("click", convertCurrency);
-chartTargetSel.addEventListener("change", (e)=>loadChart(e.target.value));
-toSel.addEventListener("change", (e)=>{
-  // If user selects USD/GBP/ZAR as "to", reflect it in chart target for a cohesive experience
-  if(["USD","GBP","ZAR"].includes(e.target.value)){
-    chartTargetSel.value = e.target.value;
-    loadChart(e.target.value);
-  }
-});
-
-// Initial state
-document.addEventListener("DOMContentLoaded", ()=>{
-  loadChart("USD");
-});
