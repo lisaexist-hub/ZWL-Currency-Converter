@@ -1,159 +1,225 @@
+/* === General Resets and Body === */
 body {
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  background: #f7f8fb;
-  color: #111;
+  background: #f3f3f3;
+  color: #222;
   margin: 0;
   padding: 0;
 }
 
-.wrap {
-  max-width: 700px;
-  margin: 60px auto;
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-  padding: 32px 28px 44px;
-}
-
-h1 {
-  text-align: center;
-  font-size: 27px;
-  margin-bottom: 8px;
-  letter-spacing: 0.01em;
-  color: #1e2a5e;
-}
-
-.subtitle {
-  text-align: center;
-  color: #666;
-  font-size: 17px;
-  margin-bottom: 26px;
-  letter-spacing: 0.01em;
-}
-
-.grid {
+/* === Top Orange Header Bar === */
+.header-bar {
+  width: 100%;
+  background: #ff7900;
+  padding: 0;
+  min-height: 64px;
   display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
-  justify-content: space-between;
+  align-items: center;
+  justify-content: start;
+}
+
+.header-bar .logo {
+  font-size: 22px;
+  font-weight: bold;
+  color: #fff;
+  letter-spacing: 0.01em;
+  padding: 0 36px;
+  display: flex;
+  align-items: center;
+}
+
+.header-bar .logo-emoji {
+  margin-right: 7px;
+  font-size: 1.21em;
+}
+
+.header-bar .brand {
+  margin-left: 7px;
+}
+
+/* === Card (Converter Container) === */
+.converter-card {
+  max-width: 510px;
+  margin: 48px auto 16px auto;
+  background: #fff;
+  border-radius: 22px;
+  box-shadow: 0 12px 30px rgba(80,40,8,0.11);
+  padding: 36px 32px 32px 32px;
+}
+
+@media (max-width: 600px) {
+  .converter-card {
+    max-width: 97vw;
+    padding: 18px 4vw 18px 4vw;
+    margin-top: 16px;
+  }
+}
+
+/* === Form Header Texts === */
+.converter-card h2 {
+  color: #ff7900;
+  font-size: 1.55em;
+  font-weight: 700;
+  margin-bottom: 6px;
+  margin-top: 0;
+  letter-spacing: 0.01em;
+  text-align: left;
+}
+
+.converter-card .subtitle {
+  font-size: 1.07em;
+  color: #666;
+  margin-bottom: 22px;
+  text-align: left;
+}
+
+/* === Form, Inputs, Selects, Labels === */
+#converter-form {
+  margin-top: 0;
   margin-bottom: 0;
 }
 
-.grid > div {
-  flex: 1 1 200px;
+.form-group {
+  margin-bottom: 16px;
 }
 
 label {
   display: block;
-  margin-bottom: 6px;
   font-weight: 600;
+  margin-bottom: 5px;
+  color: #333;
+  font-size: 1em;
 }
 
-input,
+input, 
 select {
   width: 100%;
-  padding: 10px 12px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 15px;
-  background: #f9fafb;
-  transition: box-shadow 0.2s, border 0.2s;
+  padding: 14px 13px 13px 13px;
+  border: 1.5px solid #ccc;
+  border-radius: 10px;
+  font-size: 1.01em;
+  margin-bottom: 0;
+  background: #fcfcfc;
+  transition: border 0.2s, box-shadow 0.2s;
 }
 
-input:focus,
-select:focus {
-  border-color: #3048a5;
-  box-shadow: 0 0 0 1.5px #3048a533;
+input:focus, select:focus {
+  border-color: #ff7900;
   outline: none;
+  box-shadow: 0 0 0 2px #ffd9b9;
 }
 
-button {
-  display: block;
+button[type="submit"] {
   width: 100%;
-  padding: 12px;
-  margin-top: 20px;
-  background: #1e2a5e;
+  padding: 13px 0;
+  margin-top: 10px;
+  background: #ff7900;
   color: #fff;
-  font-weight: bold;
+  font-size: 1.15em;
+  font-weight: 600;
   border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 16px;
-  letter-spacing: 0.02em;
-  transition: background 0.3s;
-}
-
-button:hover {
-  background: #3048a5;
-}
-
-#result {
-  text-align: center;
-  margin: 24px 0 16px 0;
-  font-size: 19px;
-  min-height: 52px;
-  padding: 13px 0 6px 0;
-  background: #f6faff;
   border-radius: 9px;
-  box-shadow: 0 2px 8px rgba(30,42,94,0.06);
+  cursor: pointer;
+  transition: background 0.2s;
+  letter-spacing: 0.02em;
+}
+
+button[type="submit"]:hover,
+button[type="submit"]:focus {
+  background: #ee6204;
+}
+
+/* === Result/Error Box === */
+#result {
+  text-align: left;
+  margin: 23px 0 0 0;
+  font-size: 1.08em;
+  min-height: 46px;
+  background: #f5f5f5;
+  color: #222;
+  padding: 14px 18px;
+  border-radius: 9px;
+  border: none;
+  box-shadow: 0 1px 4px rgba(100,60,30,0.08);
   transition: background 0.2s, color 0.2s;
 }
 
 #result.success {
-  color: #153161;
-  background: #eef9f2;
-  border: 1px solid #b9ecd9;
+  background: #f2faee;
+  color: #1f694b;
 }
-
 #result.error {
-  color: #e74c3c;
-  background: #fff6f5;
-  border: 1px solid #ffd6d2;
+  background: #fbe6e5;
+  color: #de3434;
 }
-
 #result.neutral {
+  background: #f5f5f5;
   color: #666;
-  background: #f6faff;
-  border: 1px solid #dde9f0;
 }
 
 #result strong {
-  color: #1e2a5e;
-  font-weight: 700;
-  font-size: 1.14em;
+  color: #ff7900;
+  font-weight: 800;
+  font-size: 1.13em;
   letter-spacing: 0.01em;
 }
 
 #result small {
-  color: #758097;
+  color: #888;
   font-size: 14px;
   display: block;
-  margin-top: 2px;
+  margin-top: 3px;
 }
 
+#result .icon {
+  font-size: 1.23em;
+  vertical-align: text-bottom;
+  margin-right: 4px;
+}
+
+/* === Chart/Card Below (if present) === */
+.trend-card {
+  max-width: 510px;
+  margin: 24px auto 0 auto;
+  background: #fff;
+  border-radius: 19px;
+  box-shadow: 0 6px 18px rgba(80,40,8,0.075);
+  padding: 19px 22px 19px 22px;
+}
+
+.trend-card h3 {
+  font-size: 1.15em;
+  color: #1e2a5e;
+  margin-top: 0;
+}
+
+/* Chart Canvas Styling */
 canvas {
   margin-top: 14px;
-  background: #f7f8fb;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(30,42,94,0.04);
+  background: #f9f9fb;
+  border-radius: 7px;
 }
 
 footer {
   text-align: center;
   font-size: 14px;
-  color: #777;
+  color: #888;
   margin-top: 26px;
   letter-spacing: 0.01em;
+  padding-bottom: 28px;
 }
 
-/* Responsive Tweaks */
-@media (max-width: 850px) {
-  .wrap { max-width: 99vw; }
-  .grid { flex-direction: column; gap: 10px; }
-  .wrap { padding: 16px 6vw 24px; }
-}
-
+/* Responsive */
 @media (max-width: 600px) {
-  h1 { font-size: 20px; }
-  .subtitle { font-size: 15px; }
+  .converter-card,
+  .trend-card { max-width: 99vw; padding: 3vw; }
+  .header-bar .logo { font-size: 19px; padding: 0 16px; }
+}
+
+/* Optional — keep main content centered always */
+.main-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
 }
