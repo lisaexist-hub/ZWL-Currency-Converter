@@ -9,6 +9,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const chartCanvas = document.getElementById("chart");
   let chartInstance;
 
+  // Helper: remove all status classes and add one if needed
+  function setResultStatus(status) {
+    resultDiv.classList.remove('success', 'error', 'neutral');
+    if (status) resultDiv.classList.add(status);
+  }
+
   if (!form || !resultDiv || !amountInput || !fromSelect || !toSelect) {
     alert("❌ Error: One or more required elements not found in the DOM.");
     console.error("Missing DOM element", { form, resultDiv, amountInput, fromSelect, toSelect });
@@ -18,21 +24,19 @@ document.addEventListener("DOMContentLoaded", () => {
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    // Extra debug: confirm handler is active
-    console.log("➡️ Convert clicked!");
-
+    setResultStatus(); // Remove previous status
     const amount = parseFloat(amountInput.value);
     const from = fromSelect.value;
     const to = toSelect.value;
 
     if (isNaN(amount) || amount <= 0) {
+      setResultStatus("error");
       resultDiv.textContent = "⚠️ Enter a valid amount.";
-      resultDiv.style.color = "#e74c3c";
       return;
     }
 
+    setResultStatus("neutral");
     resultDiv.textContent = "Fetching live rate...";
-    resultDiv.style.color = "#666";
 
     try {
       const apiUrl = `https://v6.exchangerate-api.com/v6/baf8990da4b95a474a16a2ad/latest/${from}`;
@@ -57,12 +61,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const converted = (amount * rate).toFixed(2);
 
+      setResultStatus("success");
       resultDiv.innerHTML = `
         ✅ ${amount} ${from} = <strong>${converted} ${to}</strong><br>
         <small>1 ${from} = ${rate.toFixed(2)} ${to}</small><br>
         <small>Updated: ${new Date().toLocaleString()}</small>
       `;
-      resultDiv.style.color = "#111";
 
       // generate trend
       const trend = Array.from({ length: 7 }, (_, i) => ({
@@ -91,9 +95,9 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     } catch (err) {
       console.error("❌ Error:", err);
-      resultDiv.textContent = "❌ Could not fetch live rates. Try again later.<br>" +
-                              (err.message ? `Error: ${err.message}` : "");
-      resultDiv.style.color = "#e74c3c";
+      setResultStatus("error");
+      resultDiv.innerHTML = "❌ Could not fetch live rates. Try again later.<br>" +
+                            (err.message ? `Error: ${err.message}` : "");
     }
   });
 });
