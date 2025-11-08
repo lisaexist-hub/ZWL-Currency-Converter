@@ -6,8 +6,9 @@ It fetches live exchange rates using the ExchangeRate API
  and displays conversion results with an interactive 7-day trend chart powered by Chart.js.
 
 
-<div align="center">
-  <img src="zwl_banner.png" alt="ZWL Currency Converter Banner" width="100%" />
+<p align="center">
+  <img src="https://raw.githubusercontent.com/lisaexist-hub/ZWL-Currency-Converter/main/assets/zwl_banner.png" alt="ZWL Currency Converter Banner" width="100%">
+</p>
 
   # 💱 ZWL Currency Converter  
   **Real-Time Forex Tool for Zimbabwe**
@@ -84,9 +85,9 @@ EUR	                Euro
 🧾 Add a “Rate Source” section and transparency notes
 
 
-👩🏽‍💻 Author
-Lisa Dube
-Software Developer | Zimbabwe 🇿🇼 / South Africa 🇿🇦
+               👩🏽‍💻 Author
+               Lisa Dube
+Software Engineer | Creative Technologist | Zimbabwe 🇿🇼 / South Africa 🇿🇦
 Developed with ❤️ by Lisa Dube (@lisaexist-hub)
 📧 Contact: lisaexist@gmail.com
 
@@ -96,13 +97,9 @@ Developed with ❤️ by Lisa Dube (@lisaexist-hub)
 “Building software that bridges technology and people.”
 
 🪪 License
+This project is open-source and available under the MIT License.
 
-This project is open-source and available under the MIT License
-.
-
-⭐ If you like this project...
-
-Help support it by starring ⭐ the repo or sharing it with others in the Zimbabwean tech community!
+⭐ If you like this project...Help support it by starring ⭐ the repo or sharing it with others in the Zimbabwean tech community!
 
 
 
