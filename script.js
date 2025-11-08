@@ -1,3 +1,5 @@
+// 🌍 ZWL Currency Converter by Lisa Dube
+
 console.log("✅ ZWL Converter Script Loaded");
 
 document.addEventListener("DOMContentLoaded", () => {
