@@ -1,4 +1,4 @@
-/* === General Resets and Body === */
+
 body {
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   background: #f3f3f3;
@@ -7,7 +7,7 @@ body {
   padding: 0;
 }
 
-/* === Top Orange Header Bar === */
+/* === Top  Header Bar === */
 .header-bar {
   width: 100%;
   background: #ff7900;
@@ -37,7 +37,7 @@ body {
   margin-left: 7px;
 }
 
-/* === Card (Converter Container) === */
+/* === Converter Container === */
 .converter-card {
   max-width: 510px;
   margin: 48px auto 16px auto;
@@ -177,7 +177,7 @@ button[type="submit"]:focus {
   margin-right: 4px;
 }
 
-/* === Chart/Card Below (if present) === */
+/* === Chart/Card === */
 .trend-card {
   max-width: 510px;
   margin: 24px auto 0 auto;
@@ -216,7 +216,7 @@ footer {
   .header-bar .logo { font-size: 19px; padding: 0 16px; }
 }
 
-/* Optional — keep main content centered always */
+
 .main-content {
   display: flex;
   flex-direction: column;
