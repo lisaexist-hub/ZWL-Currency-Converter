@@ -12,20 +12,23 @@ body {
   background: #fff;
   border-radius: 16px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-  padding: 30px 25px 40px;
+  padding: 32px 28px 44px;
 }
 
 h1 {
   text-align: center;
-  font-size: 26px;
-  margin-bottom: 6px;
+  font-size: 27px;
+  margin-bottom: 8px;
+  letter-spacing: 0.01em;
   color: #1e2a5e;
 }
 
 .subtitle {
   text-align: center;
   color: #666;
-  margin-bottom: 24px;
+  font-size: 17px;
+  margin-bottom: 26px;
+  letter-spacing: 0.01em;
 }
 
 .grid {
@@ -33,6 +36,7 @@ h1 {
   flex-wrap: wrap;
   gap: 15px;
   justify-content: space-between;
+  margin-bottom: 0;
 }
 
 .grid > div {
@@ -45,12 +49,22 @@ label {
   font-weight: 600;
 }
 
-input, select {
+input,
+select {
   width: 100%;
   padding: 10px 12px;
   border: 1px solid #ccc;
   border-radius: 8px;
   font-size: 15px;
+  background: #f9fafb;
+  transition: box-shadow 0.2s, border 0.2s;
+}
+
+input:focus,
+select:focus {
+  border-color: #3048a5;
+  box-shadow: 0 0 0 1.5px #3048a533;
+  outline: none;
 }
 
 button {
@@ -64,6 +78,8 @@ button {
   border: none;
   border-radius: 8px;
   cursor: pointer;
+  font-size: 16px;
+  letter-spacing: 0.02em;
   transition: background 0.3s;
 }
 
@@ -73,17 +89,71 @@ button:hover {
 
 #result {
   text-align: center;
-  margin: 20px 0;
-  font-size: 17px;
+  margin: 24px 0 16px 0;
+  font-size: 19px;
+  min-height: 52px;
+  padding: 13px 0 6px 0;
+  background: #f6faff;
+  border-radius: 9px;
+  box-shadow: 0 2px 8px rgba(30,42,94,0.06);
+  transition: background 0.2s, color 0.2s;
+}
+
+#result.success {
+  color: #153161;
+  background: #eef9f2;
+  border: 1px solid #b9ecd9;
+}
+
+#result.error {
+  color: #e74c3c;
+  background: #fff6f5;
+  border: 1px solid #ffd6d2;
+}
+
+#result.neutral {
+  color: #666;
+  background: #f6faff;
+  border: 1px solid #dde9f0;
+}
+
+#result strong {
+  color: #1e2a5e;
+  font-weight: 700;
+  font-size: 1.14em;
+  letter-spacing: 0.01em;
+}
+
+#result small {
+  color: #758097;
+  font-size: 14px;
+  display: block;
+  margin-top: 2px;
 }
 
 canvas {
-  margin-top: 10px;
+  margin-top: 14px;
+  background: #f7f8fb;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(30,42,94,0.04);
 }
 
 footer {
   text-align: center;
   font-size: 14px;
   color: #777;
-  margin-top: 25px;
+  margin-top: 26px;
+  letter-spacing: 0.01em;
+}
+
+/* Responsive Tweaks */
+@media (max-width: 850px) {
+  .wrap { max-width: 99vw; }
+  .grid { flex-direction: column; gap: 10px; }
+  .wrap { padding: 16px 6vw 24px; }
+}
+
+@media (max-width: 600px) {
+  h1 { font-size: 20px; }
+  .subtitle { font-size: 15px; }
 }
